@@ -174,3 +174,157 @@ void Do_Start(char *strSource)     //识别最先的一个单词
 
     return ;
 }
+
+void Do_Tag(char *strSource)
+{
+    gnLocate++;
+    gnRow++;
+
+    if(IsChar(strSource[gnLocate])
+    || IsDigit(strSource[gnLocate])){
+        Do_Tag(strSource);
+    }
+    else Do_EndOfTag(strSource);
+
+    return ;
+}
+
+void Do_Digit(char *strSource)
+{
+    gnLocate++;
+    gnRow++;
+
+    if(IsDigt(strSource[gnLocate])){
+        uWord.value.T2 = uWord.value.T2 * 10
+            + strSource[gnLocate] - '0';
+        Do_Digit(strSource);
+    }
+    else Do_EndOfDigit(strSource);
+    return ;
+}
+
+void Do_EndOfTag(char *strSource)
+{
+    int nLoop;
+    
+    uWord.syn = _SYN_ID;
+
+    strncpy(uWord.value.T1, strSource + gnLocateStart,
+            gnLocate - gnLocateStart);
+    uWord.value.T1[gnLocate - gnLocateStart] = '\0';
+
+    nLoop = 0;
+    while(strcmp(KEY_WORDS[nLoop], _KEY_WORD_END)){
+        if(! strcmp(KEY_WORDS[nLoop], uWord.value.T1)){
+            uWord.syn = nLoop + 1;
+            break;
+        }
+
+        nLoop++;
+    }
+
+    return ;
+}
+
+void Do_EndOfDigit(char *strSource)
+{
+    uWord.syn = _SYN_NUM;
+    return ;
+}
+
+void Do_EndOfEqual(char *strSource)
+{
+    if(strSource[gnLocate + 1] != '='){
+        uWord.syn = _SYN_ASSIGN;
+        uWord.value.T3 = strSource[gnLocate];
+    }
+    else{
+        gnLocate++;
+        gnRow++;
+
+        uWord.syn = _SYN_EQ;
+        strcpy(uWord.value.T1, "==");
+    }
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfPlus(char *strSource)
+{
+    uWord.syn = _SYN_PLUS;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfSubtraction(char *strSource)
+{
+    uWord.syn = _SYN_MINUS;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfMultiply(char *strSource)
+{
+    uWord.syn = _SYN_TIMES;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfDivide(char *strSource)
+{
+    uWord.syn = _SYN_DIVIDE;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfLParen(char *strSource)
+{
+    uWord.syn = _SYN_LPAREN;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfRParen(char *strSource)
+{
+    uWord.syn = _SYN_RPAREN;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
+
+void Do_EndOfLeftBracket1(char *strSource)
+{
+    uWord.syn = _SYN_LEFTBRACKET1;
+    uWord.value.T3 = strSource[gnLocate];
+
+    gnLocate++;
+    gnRow++;
+
+    return ;
+}
